@@ -1,6 +1,6 @@
 # esrileaflet3JS
 
-Basic Esri-Leaflet/three.js hybrid example.  This is a basic Node.js application that is designed to support the following use case:
+Basic Esri-Leaflet/three.js hybrid example.  This is a basic Node.js application that is designed to support the following use cases and technical requirements:
 
 * Integrate a 2d and 3d view based on a map extent
 * Support ArcGIS.com base maps
