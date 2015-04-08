@@ -23,7 +23,7 @@ Three.js is used to support edge case scenarios such as sub-surface mapping.
 
 ## Roadmap
 
-* Integrate 3d point cloud data via 3.js surface.
+* Integrate 3d point cloud data via 3.js surface.  See: https://github.com/geommills/esrileaflet3JS/issues
 
 
 ## License
