@@ -21,7 +21,7 @@ Three.js is used to support edge case scenarios such as sub-surface mapping.
 5.  Start Node Server<br><pre><code>node server.js</code></pre>
 6.  Open a browser and go to http://localhost:1337/
 
-<b>NOTE:</b>  Node is only used to serve up the web application.  The web app can be deployed to a server or PaaS that is not using Node.
+<b>NOTE:</b>  Node is only used to serve up the web application on a development environment.  The web app can be deployed to a server or PaaS that is not using Node.
 
 ## Roadmap
 
