@@ -16,9 +16,9 @@ Three.js is used to support edge case scenarios such as sub-surface mapping.
 
 1.  Clone the Application
 2.  CD to the Application
-3.  run npm install to install npm dependencies
-4.  run bower install to install javascript packages
-5.  run node server.js to run the application
+3.  run <pre><code>npm install</code></pre> to install npm dependencies
+4.  run <pre><code>bower install to install</code></pre> javascript packages
+5.  run <pre><code>node server.js</code></pre> to run the application
 6.  Enjoy
 
 ## Roadmap
