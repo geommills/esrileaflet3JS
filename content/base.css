@@ -1,0 +1,141 @@
+/*
+.carousel .slide{
+	background-color: #000;
+	background-image:none !important;
+}
+
+.carousel-inner .active{
+	background-color: #000;
+	background-image:none !important;
+}
+
+.carousel .item .active{
+	background-color: #000;
+	background-image:none !important;
+}
+
+.carousel-control.left, .carousel-control.right {
+	background-image:none !important;
+}
+*/
+
+
+.carousel-text1 
+{
+	color:white;
+	text-shadow: 1px 1px 5px black;
+}
+
+.carousel-text2 
+{
+	color:white;
+	text-shadow: 1px 1px 5px black;
+}
+
+.carousel-text3 
+{
+	color:white;
+	text-shadow: 1px 1px 5px black;
+}
+      
+.img-circle 
+{
+    width: 140px;
+    height: 140px;
+    -webkit-transition:height 0.5s linear 0s;
+    transition:height 0.5s linear 0s;
+}
+      
+.img-circle:hover 
+{
+    width: 340px;
+    height: 340px;
+    z-index: 10
+}
+
+.summaryBox {
+  width: 400px;
+  min-height: 270px;
+  border: solid 3px #d4d4d4;
+  color: #ffffff;
+  font-size: 20px;
+  border-radius: 8px;
+  padding: 12px;
+  opacity:.90;
+  filter:alpha(opacity=90);
+    background-color: #232323;
+    margin-top: 300px;
+}
+
+
+.summaryBox a{
+		color: #F2721F;
+	}
+
+  .lead {
+width: 80%;
+font-size: 30px;
+}
+
+#siteBody { 
+  background: url(../images/background1.png) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  backgound-color: #444444;
+}
+
+.navbar {
+  background-color: #444444;
+  color: #222222;
+  border-bottom: solid 1px #222222;
+  opacity:.90;
+  filter:alpha(opacity=90);
+}
+
+.sitesection {
+  height: 1000px;
+  z-index: 1000;
+  padding-top: 100px;
+}
+
+.sectionColumn {
+  display: inline-block;
+  width: 49%;
+  height: 900px;
+  float: left;
+  padding: 20px;
+}
+
+.sectionContent{
+  width: 100%;
+  padding-left: 40px;
+  text-align: left;
+}
+
+.sectionHeader{
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.mainsection {
+  height: 1000px;
+  z-index: 1000;
+}
+
+.navbar-inverse .navbar-nav>li>a {
+color: #fff;
+cursor: pointer;
+}
+
+body {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 25px;
+  color: #f3f3f3;
+  background-color: #444444;
+}
+
+.lnkButton {
+  font-size: 18px;
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+     <!-- Load Leaflet from CDN-->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src='./bower_components/jquery/dist/jquery.js'></script>
+    <script src='./scripts/client/src/pageloader.js'></script>
+    <script src='./scripts/client/src/map.js'></script>
+    <script src='./scripts/client/src/terrain.js'></script>
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.6/esri-leaflet.js"></script>
+        <script src='./scripts/client/lib/three.js/three.min.js'></script>
+        <script src='./scripts/client/lib/three/OrbitControls.js'></script>
+        <script src='./scripts/client/lib/three/stats.min.js'></script>
+        <script src='./scripts/client/lib/three/Detector.js'></script>
+        <script src='./scripts/client/lib/three/Projector.js'></script>
+    <link rel="stylesheet" type='text/css' href="./content/main.css">
+  </head>
+  <body>
+    <div id="basemaps-wrapper" class="leaflet-bar">
+      <select id="basemapsDDL">
+        <option value="Topographic">Topographic<options>
+        <option value="Streets">Streets</option>
+        <option value="NationalGeographic">National Geographic<options>
+        <option value="Oceans">Oceans<options>
+        <option value="Gray">Gray<options>
+        <option value="DarkGray">Dark Gray<options>
+        <option value="Imagery">Imagery<options>
+        <option value="ShadedRelief">Shaded Relief<options>
+      </select>
+    </div>
+    <div id="map2D"></div>
+    <div id="map3D"></div>
+    <div id="visButtons"><button class='mapControl active' id='twoControl' type='button' onclick='changeView("twoControl")'>2D</button><button class='mapControl'  id='threeControl' type='button' onclick='changeView("threeControl")'>3D</button></div>
+    <script>
+        loadPage();
+    </script>
+  </body>
+</html>

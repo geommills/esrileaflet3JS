@@ -1,0 +1,14 @@
+{
+  "name": "esrileaflet3JS",
+  "version": "0.0.0",
+  "authors": [
+    "Mike Mills <mmills@geoengineers.com>"
+  ],
+  "description": "Spike ESRI 3JS",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "~3.1.1",
+    "esri-leaflet": "*"
+  }
+}

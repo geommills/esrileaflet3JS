@@ -1,0 +1,28 @@
+{
+  "name": "esrileaflet3JS",
+  "version": "0.1.0",
+  "author": "Mike Mills",
+  "description": "esrileaflet3JS",
+  "dependencies": {
+    "aws-sdk": "~2.0.0-rc.14",
+    "base64-js": "0.0.6",
+    "bookshelf": "~0.6.10",
+    "bower": "*",
+    "change-case": "~2.1.1",
+    "crypto-js": "~3.1.2-3",
+    "geojson": "~0.1.5",
+    "handlebars": "~2.0.0-alpha.2",
+    "js-base64": "~2.1.5",
+    "lodash": "~2.4.1",
+    "minify": "~0.5.1",
+    "moment": "~2.6.0",
+    "restify": "~2.7.0",
+    "when": "~3.1.0",
+    "request": "~2.40.0",
+    "nodemailer": "*"
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+  }
+}
