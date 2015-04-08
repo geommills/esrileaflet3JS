@@ -4,7 +4,7 @@ html, body,  #map2D, #map3D {
         height : 100%;
       }
       #map3D {
-        background-color: #888888;
+        background-color: #333333;
       }
       #visButtons {
         position: absolute;;

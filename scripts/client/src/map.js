@@ -1,4 +1,8 @@
 
+var layer;
+var map;
+var layerLabels;
+
 function loadMap()
 {
 	map = L.map('map2D').setView([45.528, -122.680], 13);
@@ -9,10 +13,7 @@ function loadMap()
     });
 }
 
-    var layerLabels;
-
-
-  function setBasemap(basemap) {
+function setBasemap(basemap) {
     if (layer) {
       map.removeLayer(layer);
     }
@@ -29,14 +30,12 @@ function loadMap()
 
     if(scene)
     {
-        scene.remove(mesh);
         var extent = map.getBounds();
         var width = window.innerWidth;
         var height = window.innerHeight;
         var mapurl = layer._url.toString().replace("/tile/{z}/{y}/{x}", "").replace("{s}", "services");
         createTerrain(width, height, extent, mapurl);
     }
-
-  }
+}
 
   

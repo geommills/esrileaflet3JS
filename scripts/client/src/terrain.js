@@ -13,17 +13,11 @@ function load3D(width, height, extent, mapurl)
 {
 	if ( ! Detector.webgl ) {
 		Detector.addGetWebGLMessage();
-		document.getElementById( 'map3D' ).innerHTML = "";
 	}
-    var el = document.getElementById('map3D'),
-       elClone = el.cloneNode(true);
-	el.parentNode.replaceChild(elClone, el);
 	init3JS();
 	createTerrain(width, height, extent, mapurl);
 	animate();
 }	
-
-
 
 function init3JS() {
 		scene = null;
@@ -39,15 +33,10 @@ function init3JS() {
 		scene.camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 20000 );
 		camera = scene.camera;
 		controls = new THREE.OrbitControls(camera);
-		controls.center.set( 0.0, 50.0, 0.0 );
-		controls.userPanSpeed = 100;
-		camera.position.y =  controls.center.y + 800;
-		camera.position.x = 0;
-		camera.position.z = 500;
 		renderer = new THREE.WebGLRenderer();
 		renderer.setClearColor( 0x333333 );
 		renderer.setPixelRatio( window.devicePixelRatio );
-		renderer.setSize( window.innerWidth, window.innerHeight );
+		renderer.setSize( window.innerWidth-2, window.innerHeight-3 );
 		container.appendChild( renderer.domElement );        
 		var ambientLight = new THREE.AmbientLight(0xbbbbbb);
 		scene.add(ambientLight);
@@ -90,7 +79,16 @@ function createHelperGrids(width, height)
 }
 
 function createTerrain(width, height, extent, mapurl){
-
+	controls.center.set( 0.0, 50.0, 0.0 );
+	controls.userPanSpeed = 100;
+	camera.position.y =  controls.center.y + 800;
+	camera.position.x = 0;
+	camera.position.z = 500;
+    if(mesh){
+    	scene.remove(mesh);
+		scene.remove(helperTerrainGrid1);
+		scene.remove(helperTerrainGrid2);
+	}
 	var extentString = extent._southWest.lng + "," 
 		+ extent._southWest.lat + "," 
 		+ extent._northEast.lng + "," 
@@ -102,29 +100,24 @@ function createTerrain(width, height, extent, mapurl){
 
 	var geometry = new THREE.PlaneBufferGeometry( width, height, worldWidth - 1, worldDepth - 1 );
 
-	geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
-	
+	geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );	
 
 	THREE.ImageUtils.crossOrigin = "";
 	var material = new THREE.MeshLambertMaterial({
 		          	map: THREE.ImageUtils.loadTexture(imageUrl),
 					transparent: true,
-					opacity: 0.95 
+					opacity: 1 
 		        });
 	mesh = new THREE.Mesh( geometry, material );
+
 	scene.add(mesh);
-	if(helperTerrainGrid1)
-	{
-		scene.remove(helperTerrainGrid1);
-		scene.remove(helperTerrainGrid2);
-	}
 	createHelperGrids(width, height);
 }
 
 function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
-	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.setSize( window.innerWidth-3, window.innerHeight-3 );
 }
 
 function animate() {
