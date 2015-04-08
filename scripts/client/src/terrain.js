@@ -36,7 +36,7 @@ function init3JS() {
 		renderer = new THREE.WebGLRenderer();
 		renderer.setClearColor( 0x333333 );
 		renderer.setPixelRatio( window.devicePixelRatio );
-		renderer.setSize( window.innerWidth-2, window.innerHeight-3 );
+		renderer.setSize( window.innerWidth-4, window.innerHeight-4 );
 		container.appendChild( renderer.domElement );        
 		var ambientLight = new THREE.AmbientLight(0xbbbbbb);
 		scene.add(ambientLight);
@@ -117,7 +117,7 @@ function createTerrain(width, height, extent, mapurl){
 function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
-	renderer.setSize( window.innerWidth-3, window.innerHeight-3 );
+	renderer.setSize( window.innerWidth-4, window.innerHeight-4 );
 }
 
 function animate() {
