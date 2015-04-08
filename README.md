@@ -6,7 +6,7 @@ Basic Esri-Leaflet/three.js hybrid example.  This is a basic Node.js application
 * Support ArcGIS.com base maps
 * Leaflet and no Dojo
 
-[Three.js](http://threejs.org) is used to support edge case scenarios such as sub-surface mapping.
+[Three.js](http://threejs.org) is a JavaScript 3D library and is used to support edge case scenarios such as sub-surface mapping.
 
 ## Prerequisites
 
