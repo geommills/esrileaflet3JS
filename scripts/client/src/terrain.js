@@ -37,6 +37,11 @@ function init3JS() {
 		renderer.setClearColor( 0x333333 );
 		renderer.setPixelRatio( window.devicePixelRatio );
 		renderer.setSize( window.innerWidth-4, window.innerHeight-4 );
+		controls.center.set( 0.0, 50.0, 0.0 );
+		controls.userPanSpeed = 100;
+		camera.position.y =  controls.center.y + 800;
+		camera.position.x = 0;
+		camera.position.z = 500;
 		container.appendChild( renderer.domElement );        
 		var ambientLight = new THREE.AmbientLight(0xbbbbbb);
 		scene.add(ambientLight);
@@ -79,11 +84,6 @@ function createHelperGrids(width, height)
 }
 
 function createTerrain(width, height, extent, mapurl){
-	controls.center.set( 0.0, 50.0, 0.0 );
-	controls.userPanSpeed = 100;
-	camera.position.y =  controls.center.y + 800;
-	camera.position.x = 0;
-	camera.position.z = 500;
     if(mesh){
     	scene.remove(mesh);
 		scene.remove(helperTerrainGrid1);
@@ -97,6 +97,10 @@ function createTerrain(width, height, extent, mapurl){
 	var imageUrl = mapurl+"/export?"
 		+ "bbox="+ extentString+"&bboxSR=4326&layers=&layerDefs=&size=" + window.innerWidth +"%2C" + window.innerHeight 
 		+ "&imageSR=&format=jpg&transparent=false&dpi=&time=&layerTimeOptions=&dynamicLayers=&gdbVersion=&mapScale=&f=image";
+
+
+		
+
 
 	var geometry = new THREE.PlaneBufferGeometry( width, height, worldWidth - 1, worldDepth - 1 );
 
