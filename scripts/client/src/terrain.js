@@ -98,6 +98,7 @@ function createHelperGrids(geometry1, geometry2)
 
 function createBorings(extent, width, height, minz)
 {
+	console.log(extent);
 	for(var i=0; i < sceneBorings.length; i++)
 	{
     	scene.remove(sceneBorings[i]);
@@ -291,6 +292,7 @@ function createTerrain(width, height, extent, mapurl){
 	else
 	{		
 		if(!previousGeometry){
+			createBorings(extent, width, height, minZ);
 			geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );	
 		}
 		THREE.ImageUtils.crossOrigin = "";
@@ -311,7 +313,7 @@ function createTerrain(width, height, extent, mapurl){
 			geometry2.attributes.position.array[ j+1 ] = geometry2.attributes.position.array[ j+1 ]- 200;
 		}
 		createHelperGrids(geometry1, geometry2);
-		createBorings(extent, width, height, minZ);
+		//createBorings(extent, width, height, minZ);
 	}
 }
 
