@@ -13,7 +13,7 @@ var previousGeometry;
 
 
 var mapboxUrl = "https://api.tiles.mapbox.com/v4/surface/mapbox.mapbox-terrain-v1.json";
-var accessToken = ""; //Set Mapbox access token here...
+var accessToken; //Set Mapbox access token here...
 
 //var accessToken = "";
 function load3D(width, height, extent, mapurl)
@@ -22,8 +22,21 @@ function load3D(width, height, extent, mapurl)
 		Detector.addGetWebGLMessage();
 	}
 	init3JS();
-	createTerrain(width, height, extent, mapurl);
-	animate();
+	$.ajax({
+	        url:  "/getToken",
+	        type: 'get',
+	        success: function(result){
+	        	accessToken = result;
+				createTerrain(width, height, extent, mapurl);
+				animate();
+	        },
+	        error: function(err)
+	        {
+	        	accessToken = "";
+				createTerrain(width, height, extent, mapurl);
+				animate();
+	        }
+	 });
 }	
 
 function init3JS() {

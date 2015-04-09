@@ -3,6 +3,13 @@ var path = require('path');
 var fs = require('fs');
 var nodemailer = require('nodemailer');
 
+var mapBoxAPIToken = ""; //Set your token here!
+
+exports.getMapBoxAPIToken = function (request, response, next)
+{
+	response.write(mapBoxAPIToken);
+	response.end();
+};
 
 var transporter = nodemailer.createTransport({
     service: 'Gmail',
