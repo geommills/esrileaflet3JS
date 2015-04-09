@@ -11,8 +11,11 @@ var helperTerrainGrid1, helperTerrainGrid2;
 var previousExtent;
 var previousGeometry;
 
+
+var mapboxUrl = "https://api.tiles.mapbox.com/v4/surface/mapbox.mapbox-terrain-v1.json";
 var accessToken = ""; //Set Mapbox access token here...
 
+//var accessToken = "";
 function load3D(width, height, extent, mapurl)
 {
 	if ( ! Detector.webgl ) {
@@ -80,10 +83,11 @@ function createHelperGrids(geometry1, geometry2)
 }
 
 function createTerrain(width, height, extent, mapurl){
-	var totalPoints =50;
+	var totalPoints =150;
 	var ratio = 0;
 	var xdiff = 0;
 	var ydiff = 0;
+
 	if(width > height)
 	{
 		ratio = width / height;
@@ -115,17 +119,18 @@ function createTerrain(width, height, extent, mapurl){
 		+ "bbox="+ extentString+"&bboxSR=4326&layers=&layerDefs=&size=" + window.innerWidth +"%2C" + window.innerHeight 
 		+ "&imageSR=&format=jpg&transparent=false&dpi=&time=&layerTimeOptions=&dynamicLayers=&gdbVersion=&mapScale=&f=image";
 
-	var xInterval = (extent._northEast.lng - extent._southWest.lng) / xdiff;
-	var yInterval = (extent._northEast.lat - extent._southWest.lat) / ydiff;
+	var xInterval = Math.abs(extent._northEast.lng - extent._southWest.lng) / xdiff;
+	var yInterval = Math.abs(extent._northEast.lat - extent._southWest.lat) / ydiff;
 	console.log("xInterval", xInterval);
 	console.log("yInterval", yInterval);
+
 	var newWidth = xdiff * Math.floor(width / xdiff);
 	var newHeight = ydiff * Math.floor(height / ydiff);
 
-	var geometry = new THREE.PlaneBufferGeometry(newWidth, newHeight, xdiff-1, ydiff-1 );
+	console.log("newWidth", newWidth);
+	console.log("newHeight", newHeight);
 
-	geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );	
-
+	var geometry = new THREE.PlaneBufferGeometry(newWidth, newHeight, xdiff, ydiff);
 	var derivedPoints = "";
 	var xAdd = 0;
 	var yAdd = 0;
@@ -133,25 +138,25 @@ function createTerrain(width, height, extent, mapurl){
 	var newY = 0;
 	console.log("Geometry Size: ", geometry.attributes.position.array.length);
 	for ( var j = 0; j < geometry.attributes.position.array.length; j=j+3 ) {
-		console.log("XPosition:", ((geometry.attributes.position.array[j] + (newWidth / 2)) / xdiff));
-		xAdd = ((geometry.attributes.position.array[j] + (newWidth / 2)) / xdiff) * xInterval;
-		yAdd = ((geometry.attributes.position.array[j+2] + (newHeight / 2)) / ydiff) * yInterval;
+		xAdd = Math.floor(((geometry.attributes.position.array[j] + (newWidth / 2)) / (newWidth/(xdiff)))) * xInterval;
+		yAdd = Math.floor(((geometry.attributes.position.array[j+1] + (newHeight / 2)) / (newHeight/(ydiff)))) * yInterval;
 		newX = extent._southWest.lng + xAdd;
 		newY = extent._southWest.lat + yAdd;		
 		if(derivedPoints !== "") derivedPoints = derivedPoints + ';';
 		derivedPoints += newX + "," + newY
 	}
-	var mapboxUrl = "https://api.tiles.mapbox.com/v4/surface/mapbox.mapbox-terrain-v1.json";
-	console.log(mapboxUrl);
-	console.log(derivedPoints);
-
+	accessTokenTest = accessToken;
 	if(previousExtent === extentString)
 	{
-		geometry = previousGeometry
-		accessToken = ""; //prevents calling mapbox too much;
+		geometry = previousGeometry;
+		accessTokenTest = ""; //prevents calling mapbox too much;
+	}
+	else
+	{
+		previousGeometry = null;
 	}
 
-	if(accessToken !== "")
+	if(accessTokenTest !== "")
 	{
 		$.ajax({
 	        url:  mapboxUrl,
@@ -164,6 +169,7 @@ function createTerrain(width, height, extent, mapurl){
         	},
 	        success: function(result){
 	        	console.log("Results Length: ", result.results.length);
+	        	console.log("Grid Points Length", geometry.attributes.position.array.length / 3)
 	        	var geoArrayPos = 0;
 	        	var minZ = result.results[0].ele;
 	        	minZ = 1000000;
@@ -173,28 +179,35 @@ function createTerrain(width, height, extent, mapurl){
 						minZ = result.results[j].ele;
 					}
 				}
+
 				var previousZ = 0;
 				var zVal = 0;
 				for ( var i = 0; i < result.results.length; i++ ) {
+					if(previousZ === 0)
+					{
+						previousZ = minZ;
+					}
 					if(result.results[i].ele === null){
 						zVal = previousZ;
 					}
 					else
 					{
-						zVal = (result.results[i].ele - minZ)/ 3;
+						zVal = (result.results[i].ele - minZ);
+						if(zVal > minZ + 1000) zVal = minZ;
 						previousZ = zVal;
 					}
 					for ( var j = 0; j < geometry.attributes.position.array.length; j=j+3 ) {
-						xAdd = ((geometry.attributes.position.array[j] + (newWidth / 2)) / xdiff) * xInterval;
-						yAdd = ((geometry.attributes.position.array[j+2] + (newHeight / 2)) / ydiff) * yInterval;
+						xAdd = Math.floor(((geometry.attributes.position.array[j] + (newWidth / 2)) / (newWidth/(xdiff)))) * xInterval;
+						yAdd = Math.floor(((geometry.attributes.position.array[j+1] + (newHeight / 2)) / (newHeight/(ydiff)))) * yInterval;
 						newX = extent._southWest.lng + xAdd;
-						newY = extent._southWest.lat + yAdd;
+						newY = extent._southWest.lat + yAdd;		
 						if(newX === result.results[i].latlng.lng && newY === result.results[i].latlng.lat)
 						{ 
-							geometry.attributes.position.array[j+1] = zVal;
+							geometry.attributes.position.array[j+2] = zVal;
 						}
 					}				
 				}
+				geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );	
 		       	THREE.ImageUtils.crossOrigin = "";
 				var material = new THREE.MeshLambertMaterial({
 					          	map: THREE.ImageUtils.loadTexture(imageUrl),
@@ -205,8 +218,8 @@ function createTerrain(width, height, extent, mapurl){
 				previousGeometry = geometry;
 				previousExtent = extentString;
 				scene.add(mesh);
-				var geometry1 = new THREE.PlaneBufferGeometry(newWidth, newHeight , xdiff-1, ydiff-1);
-				var geometry2 = new THREE.PlaneBufferGeometry(newWidth, newHeight , xdiff-1, ydiff-1);
+				var geometry1 = new THREE.PlaneBufferGeometry(newWidth, newHeight , xdiff, ydiff);
+				var geometry2 = new THREE.PlaneBufferGeometry(newWidth, newHeight , xdiff, ydiff);
 				geometry1.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 				geometry2.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 				for ( var j = 0; j < geometry2.attributes.position.array.length; j +=3 ) {
@@ -219,6 +232,9 @@ function createTerrain(width, height, extent, mapurl){
 	}
 	else
 	{		
+		if(!previousGeometry){
+			geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );	
+		}
 		THREE.ImageUtils.crossOrigin = "";
 		var material = new THREE.MeshLambertMaterial({
 					          	map: THREE.ImageUtils.loadTexture(imageUrl),
@@ -227,8 +243,8 @@ function createTerrain(width, height, extent, mapurl){
 					        });
 		mesh = new THREE.Mesh( geometry, material );
 		scene.add(mesh);
-		var geometry1 = new THREE.PlaneBufferGeometry(newWidth, newHeight , xdiff-1, ydiff-1);
-		var geometry2 = new THREE.PlaneBufferGeometry(newWidth, newHeight , xdiff-1, ydiff-1);
+		var geometry1 = new THREE.PlaneBufferGeometry(newWidth, newHeight , xdiff, ydiff);
+		var geometry2 = new THREE.PlaneBufferGeometry(newWidth, newHeight , xdiff, ydiff);
 		geometry1.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 		geometry2.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 
