@@ -10,8 +10,8 @@ var mouse;
 var helperTerrainGrid1, helperTerrainGrid2;
 var previousExtent;
 var previousGeometry;
-
-
+var minZ = 0;
+var sceneBorings = [];
 var mapboxUrl = "https://api.tiles.mapbox.com/v4/surface/mapbox.mapbox-terrain-v1.json";
 var accessToken; //Set Mapbox access token here...
 
@@ -95,6 +95,55 @@ function createHelperGrids(geometry1, geometry2)
 	scene.add(helperTerrainGrid2 );	
 }
 
+
+function createBorings(extent, width, height, minz)
+{
+	for(var i=0; i < sceneBorings.length; i++)
+	{
+    	scene.remove(sceneBorings[i]);
+	}
+	var xAdj;
+	var yAdj;
+	var xVal = 0;
+	var yVal = 0;
+	var elevation = 0;
+	samplePoints.eachFeature(function(layer) {
+		xVal = layer.feature.geometry.coordinates[0];
+		yVal = layer.feature.geometry.coordinates[1];
+		//check to see if feature is in the extent
+		if(xVal >= extent._southWest.lng && xVal <= extent._northEast.lng && yVal >= extent._southWest.lat && yVal <= extent._northEast.lat)
+		{
+			xAdj= (((( (extent._northEast.lng - xVal) / (extent._northEast.lng - extent._southWest.lng))) * width) - (width/2))*-1;
+			yAdj= (((( (extent._northEast.lat - yVal) / (extent._northEast.lat - extent._southWest.lat))) * height) - (height/2));
+			console.log("AdjustedX: ", xAdj);
+			console.log("AdjustedY: ", yAdj);
+			addBoring(xAdj, yAdj, layer.feature.properties.Elevation, layer.feature.properties.Depth);
+		}
+	});	
+}
+
+function drawCylinder(vstart, depth, color, rad){
+      var HALF_PI = +Math.PI * .5;
+      var distance = depth;
+      var cylinder = new THREE.CylinderGeometry(rad,rad,distance,rad,rad,false);
+      var material = new THREE.MeshBasicMaterial({color:color});
+
+      var pipemesh = new THREE.Mesh(cylinder,material);
+      pipemesh.position.set( vstart.x, vstart.z - (depth / 2) + 1, vstart.y);
+      return pipemesh;
+    }
+
+
+function addBoring(x, y, sEle, eEle)
+{
+	var v1 = new THREE.Vector3( x, y, sEle - minZ );
+    var color = "#993322";
+    var cylinder = drawCylinder(v1, eEle - minZ, color, 7);
+    sceneBorings.push(cylinder);
+    scene.add( cylinder );
+}
+
+
 function createTerrain(width, height, extent, mapurl){
 	var totalPoints =160;
 	var ratio = 0;
@@ -130,7 +179,7 @@ function createTerrain(width, height, extent, mapurl){
 
 	var imageUrl = mapurl+"/export?"
 		+ "bbox="+ extentString+"&bboxSR=4326&layers=&layerDefs=&size=" + window.innerWidth +"%2C" + window.innerHeight 
-		+ "&imageSR=&format=jpg&transparent=false&dpi=&time=&layerTimeOptions=&dynamicLayers=&gdbVersion=&mapScale=&f=image";
+		+ "&imageSR=&format=jpg&transparent=true&dpi=&time=&layerTimeOptions=&dynamicLayers=&gdbVersion=&mapScale=&f=image";
 
 	var xInterval = Math.abs(extent._northEast.lng - extent._southWest.lng) / xdiff;
 	var yInterval = Math.abs(extent._northEast.lat - extent._southWest.lat) / ydiff;
@@ -183,7 +232,7 @@ function createTerrain(width, height, extent, mapurl){
 	        success: function(result){
 	        	var geoArrayPos = 0;
 
-	        	var minZ = result.results[0].ele;
+	        	minZ = result.results[0].ele;
 	        	minZ = 1000000;
 				for ( var j = 0; j < result.results.length; j++ ) {
 					if(minZ > result.results[j].ele && result.results[j].ele !== null)
@@ -235,6 +284,7 @@ function createTerrain(width, height, extent, mapurl){
 					geometry2.attributes.position.array[ j+1 ] = geometry2.attributes.position.array[ j+1 ]- 200;
 				}
 				createHelperGrids(geometry1, geometry2);
+				createBorings(extent, width, height, minZ);
 	        },
 	    });
 	}
@@ -261,6 +311,7 @@ function createTerrain(width, height, extent, mapurl){
 			geometry2.attributes.position.array[ j+1 ] = geometry2.attributes.position.array[ j+1 ]- 200;
 		}
 		createHelperGrids(geometry1, geometry2);
+		createBorings(extent, width, height, minZ);
 	}
 }
 
