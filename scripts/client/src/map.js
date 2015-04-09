@@ -8,8 +8,19 @@ function loadMap()
 	map = L.map('map2D').setView([45.528, -122.680], 13);
     setBasemap("Topographic");
     var basemaps = document.getElementById('basemapsDDL');
+    var threeControl = $("#threeControl");
     basemaps.addEventListener('change', function(){
         setBasemap(basemaps.value);
+    });
+    map.on('zoomend', function() {
+        if(map.getZoom() > 15)
+        {
+            threeControl.prop('disabled', false);
+        }
+        else
+        {            
+            threeControl.prop('disabled', true);
+        }
     });
 }
 

@@ -83,7 +83,7 @@ function createHelperGrids(geometry1, geometry2)
 }
 
 function createTerrain(width, height, extent, mapurl){
-	var totalPoints =150;
+	var totalPoints =160;
 	var ratio = 0;
 	var xdiff = 0;
 	var ydiff = 0;
@@ -168,9 +168,8 @@ function createTerrain(width, height, extent, mapurl){
 	            access_token: accessToken
         	},
 	        success: function(result){
-	        	console.log("Results Length: ", result.results.length);
-	        	console.log("Grid Points Length", geometry.attributes.position.array.length / 3)
 	        	var geoArrayPos = 0;
+
 	        	var minZ = result.results[0].ele;
 	        	minZ = 1000000;
 				for ( var j = 0; j < result.results.length; j++ ) {
@@ -180,20 +179,16 @@ function createTerrain(width, height, extent, mapurl){
 					}
 				}
 
+
 				var previousZ = 0;
 				var zVal = 0;
 				for ( var i = 0; i < result.results.length; i++ ) {
-					if(previousZ === 0)
-					{
-						previousZ = minZ;
-					}
 					if(result.results[i].ele === null){
 						zVal = previousZ;
 					}
 					else
 					{
 						zVal = (result.results[i].ele - minZ);
-						if(zVal > minZ + 1000) zVal = minZ;
 						previousZ = zVal;
 					}
 					for ( var j = 0; j < geometry.attributes.position.array.length; j=j+3 ) {
