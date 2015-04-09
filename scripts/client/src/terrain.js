@@ -244,7 +244,7 @@ function createTerrain(width, height, extent, mapurl){
 		geometry2.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 
 		for ( var j = 0; j < geometry2.attributes.position.array.length; j +=3 ) {
-			geometry1.attributes.position.array[ j+1 ] = geometry1.attributes.position.array[ j+1 ] - 2;
+			geometry1.attributes.position.array[ j+1 ] = geometry.attributes.position.array[ j+1 ] - 2;
 			geometry2.attributes.position.array[ j+1 ] = geometry2.attributes.position.array[ j+1 ]- 200;
 		}
 		createHelperGrids(geometry1, geometry2);
