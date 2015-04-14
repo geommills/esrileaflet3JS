@@ -261,7 +261,7 @@ function createTerrain(width, height, extent, mapurl){
 				var zVal = 0;
 				for ( var i = 0; i < result.results.length; i++ ) {
 					if(result.results[i].ele === null){
-						zVal = -1;
+						zVal = -1000;
 					}
 					else
 					{
@@ -278,8 +278,63 @@ function createTerrain(width, height, extent, mapurl){
 						}
 					}				
 				}
+				var elevations = "";
 				for ( var j = 0; j < geometry.attributes.position.array.length; j=j+3 ) {
-					if(geometry.attributes.position.array[j+2] === -1)
+					if(geometry.attributes.position.array[j+2] === -1000)
+					{
+						var foundEle = false;						
+						while(!foundEle)
+						{  
+							if(j=== 0)
+							{
+								foundEle = false;
+							}
+							else if(j % (rowLength) === 0)
+							{
+								console.log("Modulus found:", j);
+								for ( var i = j+3; i < geometry.attributes.position.array.length; i=i+3 )
+								{
+									if(geometry.attributes.position.array[i+2] !== -1000 && !foundEle)
+									{
+										geometry.attributes.position.array[j+2] = geometry.attributes.position.array[i+2];
+										foundEle = true;
+										break;
+									}
+								}
+							}
+							else
+							{
+								for ( var i = j; i > 0; i=i-3 )
+								{
+									if(geometry.attributes.position.array[i+2] !== -1000 && !foundEle)
+									{
+										geometry.attributes.position.array[j+2] = geometry.attributes.position.array[i+2];
+										foundEle = true;
+										break;
+									}
+								}
+							}
+							if(!foundEle)
+							{
+								for ( var i = j; i < geometry.attributes.position.array.length; i=i+3 )
+								{
+									if(geometry.attributes.position.array[i+2] !== -1000 && !foundEle)
+									{
+										geometry.attributes.position.array[j+2] = geometry.attributes.position.array[i+2];
+										foundEle = true;
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+
+				for ( var j = 0; j < geometry.attributes.position.array.length; j=j+3 ) {
+					elevations += geometry.attributes.position.array[j+2] + ";";
+				}
+				console.log("Elevations", elevations);
+				/*
 					{
 						if(j !== 0 && (j % (rowLength) !== 0)){					
 							geometry.attributes.position.array[j+2] = geometry.attributes.position.array[j - 1]
@@ -295,6 +350,7 @@ function createTerrain(width, height, extent, mapurl){
 						}
 					}
 				}
+				*/
 
 
 

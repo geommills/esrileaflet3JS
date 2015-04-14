@@ -14,7 +14,7 @@ function loadMap()
         setBasemap(basemaps.value);
     });
     map.on('zoomend', function() {
-        if(map.getZoom() > 15)
+        if(map.getZoom() > 14)
         {
             threeControl.prop('disabled', false);
         }
