@@ -228,11 +228,11 @@ function createTerrain(width, height, extent, mapurl){
 	            points: derivedPoints,
 	            layer: "contour",
 	            fields: "ele", 
-	            access_token: accessToken
+	            access_token: accessToken,
+	            interpolate: true
         	},
 	        success: function(result){
 	        	var geoArrayPos = 0;
-
 	        	minZ = result.results[0].ele;
 	        	minZ = 1000000;
 				for ( var j = 0; j < result.results.length; j++ ) {
@@ -241,18 +241,31 @@ function createTerrain(width, height, extent, mapurl){
 						minZ = result.results[j].ele;
 					}
 				}
+				var rowLength=0;
+				var previousY = -1000000000000;
 
+				for ( var j = 0; j < geometry.attributes.position.array.length; j=j+3 ) {
+					if(previousY === -1000000000000)
+					{
+						previousY = geometry.attributes.position.array[j+1];
+					}
+					if(previousY === geometry.attributes.position.array[j+1])
+					{
+						rowLength += 1;
+					}
+
+				}
+				console.log("Row Length: ", rowLength);
 
 				var previousZ = 0;
 				var zVal = 0;
 				for ( var i = 0; i < result.results.length; i++ ) {
 					if(result.results[i].ele === null){
-						zVal = previousZ;
+						zVal = -1;
 					}
 					else
 					{
 						zVal = (result.results[i].ele - minZ);
-						previousZ = zVal;
 					}
 					for ( var j = 0; j < geometry.attributes.position.array.length; j=j+3 ) {
 						xAdd = Math.floor(((geometry.attributes.position.array[j] + (newWidth / 2)) / (newWidth/(xdiff)))) * xInterval;
@@ -265,6 +278,26 @@ function createTerrain(width, height, extent, mapurl){
 						}
 					}				
 				}
+				for ( var j = 0; j < geometry.attributes.position.array.length; j=j+3 ) {
+					if(geometry.attributes.position.array[j+2] === -1)
+					{
+						if(j !== 0 && (j % (rowLength) !== 0)){					
+							geometry.attributes.position.array[j+2] = geometry.attributes.position.array[j - 1]
+						}
+					}
+				}
+
+				for ( var j = 0; j < geometry.attributes.position.array.length; j=j+3 ) {
+					if(geometry.attributes.position.array[j+2] === -1)
+					{
+						if(j === 0 || (j % (rowLength) === 0)){					
+							geometry.attributes.position.array[j+2] = geometry.attributes.position.array[j + 5]
+						}
+					}
+				}
+
+
+
 				geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );	
 		       	THREE.ImageUtils.crossOrigin = "";
 				var material = new THREE.MeshLambertMaterial({
