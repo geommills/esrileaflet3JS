@@ -257,15 +257,16 @@ function createTerrain(width, height, extent, mapurl){
 				}
 				console.log("Row Length: ", rowLength);
 
-				var previousZ = 0;
+				var previousZ = -1000;
 				var zVal = 0;
 				for ( var i = 0; i < result.results.length; i++ ) {
 					if(result.results[i].ele === null){
-						zVal = -1000;
+						zVal = previousZ;
 					}
 					else
 					{
 						zVal = (result.results[i].ele - minZ);
+						previousZ = zVal;
 					}
 					for ( var j = 0; j < geometry.attributes.position.array.length; j=j+3 ) {
 						xAdd = Math.floor(((geometry.attributes.position.array[j] + (newWidth / 2)) / (newWidth/(xdiff)))) * xInterval;

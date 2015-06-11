@@ -14,7 +14,7 @@ function loadMap()
         setBasemap(basemaps.value);
     });
     map.on('zoomend', function() {
-        if(map.getZoom() > 14)
+        if(map.getZoom() > 15)
         {
             threeControl.prop('disabled', false);
         }
@@ -39,8 +39,9 @@ function setBasemap(basemap) {
       layerLabels = L.esri.basemapLayer(basemap + 'Labels');
       map.addLayer(layerLabels);
     }
-    samplePoints = L.esri.featureLayer('http://services1.arcgis.com/NPDrPpMk7Wd8mOGL/arcgis/rest/services/Sampling_Locations/FeatureServer/0');
+    samplePoints = L.esri.featureLayer('http://services1.arcgis.com/NPDrPpMk7Wd8mOGL/ArcGIS/rest/services/Sample_Locations/FeatureServer/0');
     map.addLayer(samplePoints);
+
     samplePoints.bindPopup(function (feature) {
         return L.Util.template('<p>Location: {LocName}<br>Sample Depth: {Depth}<br>Soil Type: {SoilType}</p>', feature.properties);
     });
