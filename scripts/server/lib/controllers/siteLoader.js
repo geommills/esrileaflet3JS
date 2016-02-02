@@ -2,7 +2,7 @@ var url = require('url');
 var path = require('path');
 var fs = require('fs');
 var nodemailer = require('nodemailer');
-
+var pg = require('pg');
 var mapBoxAPIToken = ""; //Set your token here!
 
 exports.getMapBoxAPIToken = function (request, response, next)
@@ -41,6 +41,36 @@ exports.sendEmail = function (request, response, next)
 	      response.end();
 	    }
 	});
+}
+
+exports.bufferFeatures  = function (request, response, next)
+{
+	var connString = 'pg://postgres:P%ssword39@localhost:5432/Taxlots';
+
+	var xVal = request.params.longitude;
+	var yVal = request.params.latitude;
+	var buffer = request.params.buffer;
+
+    pg.connect(connString, function(err, client) {
+        var sql =   "select ST_AsGeoJSON(geom) as shape ";
+        sql = sql + "from dbo.taxlots ";
+        sql = sql + "where ST_DWithin(ST_GeogFromText('SRID=4326;POINT("+yVal+","+xVal+")'), geography(latlon), "+buffer+")";
+
+        client.query(sql, vals, function(err, result) {
+            var featureCollection = new FeatureCollection();
+            for (i = 0; i < result.rows.length; i++)
+            {
+                featureCollection.features[i] = JSON.parse(result.rows[i].shape);
+            }
+            response.send(featureCollection);
+        });
+    });
+}
+
+// GeoJSON Feature Collection
+function FeatureCollection(){
+    this.type = 'FeatureCollection';
+    this.features = new Array();
 }
 
 exports.loadsite = function (request, response, next)
