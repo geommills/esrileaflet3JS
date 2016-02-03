@@ -3,10 +3,12 @@ var layer;
 var map;
 var layerLabels;
 var samplePoints;
+var layer;
+var geojson = new L.FeatureGroup();
 
 function loadMap()
 {
-	map = L.map('map2D').setView([45.528, -122.680], 13);
+	map = L.map('map2D').setView([44.0604588794, -121.295087621], 13);
     setBasemap("Topographic");
     var basemaps = document.getElementById('basemapsDDL');
     var threeControl = $("#threeControl");
@@ -23,6 +25,51 @@ function loadMap()
             threeControl.prop('disabled', true);
         }
     });
+
+    var drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+
+    // Initialise the draw control and pass it the FeatureGroup of editable layers
+    var drawControl = new L.Control.Draw({
+        /*draw: {
+            circle: false,
+            polygon: false,
+            marker: false
+        },*/
+        edit: {
+            featureGroup: drawnItems
+        }
+    });
+    map.addControl(drawControl);
+
+    map.on('draw:created', function (e) {
+        // Do whatever else you need to. (save to db, add to map etc)
+        var type = e.layerType,
+            layer = e.layer;
+        console.log(layer);
+
+        var shape = layer.toGeoJSON()
+        var shape_for_db = JSON.stringify(shape.geometry);
+
+        //drawnItems.addLayer(layerEdit);
+        $.ajax({
+          type: "Get",
+          url: "./bufferFeatures",
+          data: { geometry: shape_for_db},
+          success: function(result)
+            {
+                showFeatures(result);
+            }
+        });
+    });
+}
+
+function showFeatures(featureCollection)
+{
+    console.log(featureCollection)
+    map.removeLayer(geojson);
+    geojson = L.geoJson(featureCollection).addTo(map);
+
 }
 
 function setBasemap(basemap) {

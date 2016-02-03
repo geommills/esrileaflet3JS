@@ -45,18 +45,16 @@ exports.sendEmail = function (request, response, next)
 
 exports.bufferFeatures  = function (request, response, next)
 {
-	var connString = 'pg://postgres:P%ssword39@localhost:5432/Taxlots';
+	var connString = 'pg://postgres:P%ssword39@localhost:5432/bend_taxlots';
 
-	var xVal = request.params.longitude;
-	var yVal = request.params.latitude;
-	var buffer = request.params.buffer;
+	var geojson= request.params.geometry;
 
     pg.connect(connString, function(err, client) {
         var sql =   "select ST_AsGeoJSON(geom) as shape ";
-        sql = sql + "from dbo.taxlots ";
-        sql = sql + "where ST_DWithin(ST_GeogFromText('SRID=4326;POINT("+yVal+","+xVal+")'), geography(latlon), "+buffer+")";
-
-        client.query(sql, vals, function(err, result) {
+        sql = sql + "from public.taxlots ";
+        sql = sql + "where ST_Intersects(geography(ST_GeomFromGeoJSON('"+geojson+"')), geography(geom))";
+        console.log(sql);
+        client.query(sql, function(err, result) {
             var featureCollection = new FeatureCollection();
             for (i = 0; i < result.rows.length; i++)
             {
