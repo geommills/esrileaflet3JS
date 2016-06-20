@@ -3,7 +3,7 @@ var path = require('path');
 var fs = require('fs');
 var nodemailer = require('nodemailer');
 
-var mapBoxAPIToken = "pk.eyJ1Ijoic21hcnRtaW5lIiwiYSI6Imt6TUp0cEEifQ.9MrwD6GRlEGj9OTNN-bsRw"; //Set your token here!
+var mapBoxAPIToken = ""; //Set your token here!
 
 exports.getMapBoxAPIToken = function (request, response, next)
 {
